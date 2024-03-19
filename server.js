@@ -20,7 +20,7 @@ const pusher = new Pusher({
 
 function sendLogEntry(logEntry) {
   const now = new Date();
-  const datetimeTag = `${now.toISOString()} |`;
+  const datetimeTag = `${now.toISOString()} | `;
   const channel = `dashify-` + process.env.cid; // replace dashify-1 with env of dashify-{cid}
   pusher.trigger(channel, 'logs', { // replace dashify-1 with env of dashify-{cid}
     message: datetimeTag + logEntry
