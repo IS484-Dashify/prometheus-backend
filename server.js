@@ -9,16 +9,24 @@ const app = express();
 console.log("appId", process.env.appId);
 console.log(process.env.key);
 console.log(process.env.secret);
+console.log(process.env.cluster);
+console.log(process.env.useTLS);
 // Define the port
 const port = process.env.port;
 
 const pusher = new Pusher({
-  appId: `${process.env.appId}`,
-  key: `${process.env.key}`,
-  secret: `${process.env.secret}`,
-  cluster: `${process.env.cluster}`,
-  useTLS: `${process.env.useTLS}`,
+  appId: process.env.appId,
+  key: process.env.key,
+  secret: process.env.secret,
+  cluster: process.env.cluster,
+  useTLS: process.env.useTLS,
 });
+
+console.log("appId", process.env.appId);
+console.log(process.env.key);
+console.log(process.env.secret);
+console.log(process.env.cluster);
+console.log(process.env.useTLS);
 
 function sendLogEntry(logEntry) {
   const now = new Date();
