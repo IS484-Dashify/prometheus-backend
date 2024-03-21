@@ -13,11 +13,11 @@ console.log(process.env.secret);
 const port = process.env.port;
 
 const pusher = new Pusher({
-  appId: process.env.appId,
-  key: process.env.key,
-  secret: process.env.secret,
-  cluster: process.env.cluster,
-  useTLS: process.env.useTLS,
+  appId: `${process.env.appId}`,
+  key: `${process.env.key}`,
+  secret: `${process.env.secret}`,
+  cluster: `${process.env.cluster}`,
+  useTLS: `${process.env.useTLS}`,
 });
 
 function sendLogEntry(logEntry) {
@@ -25,7 +25,6 @@ function sendLogEntry(logEntry) {
   const datetimeTag = `${now.toISOString()} | `;
   const channel = `dashify-` + process.env.cid; // replace dashify-1 with env of dashify-{cid}
   pusher.trigger(channel, "logs", {
-    // replace dashify-1 with env of dashify-{cid}
     message: datetimeTag + logEntry,
   });
 }
