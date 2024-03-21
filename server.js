@@ -12,7 +12,7 @@ console.log(process.env.secret);
 console.log(process.env.cluster);
 console.log(process.env.useTLS);
 // Define the port
-const port = process.env.port;
+const port = process.env.PORT;
 
 const pusher = new Pusher({
   appId: process.env.appId,
@@ -21,12 +21,6 @@ const pusher = new Pusher({
   cluster: process.env.cluster,
   useTLS: process.env.useTLS,
 });
-
-console.log("appId", process.env.appId);
-console.log(process.env.key);
-console.log(process.env.secret);
-console.log(process.env.cluster);
-console.log(process.env.useTLS);
 
 function sendLogEntry(logEntry) {
   const now = new Date();
@@ -237,7 +231,7 @@ function sendPing() {
 setInterval(sendPing, 60000);
 
 // Start the Server
-server = app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-  sendLogEntry(`Server is listening on port ${port}`);
+server = app.listen(process.env.PORT, () => {
+  console.log(`Server is listening on port ${process.env.PORT}`);
+  sendLogEntry(`Server is listening on port ${process.env.PORT}`);
 });
