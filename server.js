@@ -6,6 +6,10 @@ require("dotenv").config();
 
 const app = express();
 
+
+console.log(process.env.appId);
+console.log(process.env.key);
+console.log(process.env.secret);
 // Define the port
 const port = process.env.port
 
