@@ -189,7 +189,6 @@ app.get("/metrics", async (req, res) => {
 
 // High CPU Usage Route
 app.get("/high-cpu", async (req, res) => {
-  // sendLogEntry("Simulating work on high-cpu...");
   console.log("Simulating work on high-cpu...")
   let result = 0;
   for (let i = 0; i < 1e4; i++) {
@@ -203,7 +202,7 @@ app.get("/high-cpu", async (req, res) => {
 
 // High Memory Usage Route
 app.get("/high-memory", (req, res) => {
-  sendLogEntry("Simulating work on high-memory...");
+  console.log("Simulating work on high-memory...");
   spikeMemoryUsage();
   res.send("Memory spiked to approximately 80%");
 });
@@ -212,7 +211,7 @@ app.get("/high-memory", (req, res) => {
 app.get("/error", (req, res) => {
   if (Math.random() > 0.5) {
     const logMessage = "Simulated error";
-    sendLogEntry(logMessage);
+    console.log(logMessage);
     throw new Error(logMessage);
   }
   res.send("Hello World!");
@@ -220,7 +219,7 @@ app.get("/error", (req, res) => {
 
 // System Failure Simulation Route
 app.get("/system-failure", (req, res) => {
-  sendLogEntry("Simulating system failure...");
+  console.log("Simulating system failure...");
   process.exit(1);
 });
 
@@ -230,11 +229,10 @@ app.get("/downtime", (req, res) => {
   if (server) {
     server.close(() => {
       const logMessage = "Server is going down...";
-      sendLogEntry(logMessage);
+      console.log(logMessage);
       console.log("Server is temporarily down");
       setTimeout(() => {
         server = app.listen(port, () => {
-          sendLogEntry(`Server is back up on port ${port}`);
           console.log(`Server is back up on port ${port}`);
         });
       }, 180000); // Down for 180 seconds
@@ -245,8 +243,8 @@ app.get("/downtime", (req, res) => {
 
 function sendPing() {
   const now = new Date();
-  const message = `Server is still listening at http://localhost:${port}`;
-  sendLogEntry(message, "STDOUT");
+  const message = `Server is still listening at port ${port}`;
+  console.log(message);
 }
 
 // Schedule the ping function to run every 1 minute
@@ -257,6 +255,5 @@ watchLogFile(logFilePathError, "STDERR");
 
 // Start the Server
 server = app.listen(process.env.PORT, () => {
-  // console.log(`Server is listening on port ${process.env.PORT}`);
-  sendLogEntry(`Server is listening on port ${process.env.PORT}`, "STDOUT");
+  console.log(`Server is listening on port ${process.env.PORT}`);
 });
