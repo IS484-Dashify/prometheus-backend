@@ -17,7 +17,7 @@ function sendLogEntry(logEntry, logType) {
   const datetimeTag = `${now.toISOString()} | `;
   const channel = `dashify-${process.env.cid}`; // Use dynamic channel name based on cid
   pusher.trigger(channel, "logs", {
-    message: `${datetimeTag}${logEntry}`,
+    message: `[${logType}] ${datetimeTag}${logEntry}`,
   });
 }
 
@@ -32,7 +32,7 @@ function watchLogFile(logFilePath, logType) {
       });
 
       stream.on("data", (data) => {
-        sendLogEntry(data.toString());
+        sendLogEntry(data.toString(), logType);
       });
 
       fileSize = current.size;
