@@ -189,7 +189,8 @@ app.get("/metrics", async (req, res) => {
 
 // High CPU Usage Route
 app.get("/high-cpu", async (req, res) => {
-  sendLogEntry("Simulating work on high-cpu...");
+  // sendLogEntry("Simulating work on high-cpu...");
+  console.log("Simulating work on high-cpu...")
   let result = 0;
   for (let i = 0; i < 1e4; i++) {
     for (let j = 0; j < 1e4; j++) {
