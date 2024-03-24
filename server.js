@@ -1,3 +1,4 @@
+const os = require('os');
 const fs = require('fs');
 const express = require("express");
 const client = require("prom-client");
