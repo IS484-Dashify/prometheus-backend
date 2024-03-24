@@ -14,7 +14,7 @@ const logFilePathError = path.join(__dirname, `.pm2/logs/server-${cid}-error.log
 function sendLogEntry(logEntry, logType) {
   const now = new Date();
   const datetimeTag = `${now.toISOString()} | `;
-  const channel = `dashify-${cid}`; // Use dynamic channel name based on cid
+  const channel = `dashify-${process.env.cid}`; // Use dynamic channel name based on cid
   pusher.trigger(channel, "logs", {
     message: `[${logType}] ${datetimeTag}${logEntry}`,
   });
