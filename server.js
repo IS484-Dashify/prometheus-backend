@@ -2,25 +2,13 @@ const express = require("express");
 const client = require("prom-client");
 const diskUsage = require("diskusage");
 const Pusher = require("pusher");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
-
-console.log("appId", process.env.appId);
-console.log(process.env.key);
-console.log(process.env.secret);
-console.log(process.env.cluster);
-console.log(process.env.useTLS);
-// Define the port
 const port = process.env.PORT;
 
-const pusher = new Pusher({
-  appId: process.env.appId,
-  key: process.env.key,
-  secret: process.env.secret,
-  cluster: process.env.cluster,
-  useTLS: process.env.useTLS,
-});
+const logFilePath = path.join(__dirname, `.pm2/logs/server-${cid}.log`);
 
 function sendLogEntry(logEntry) {
   const now = new Date();
@@ -30,6 +18,39 @@ function sendLogEntry(logEntry) {
     message: datetimeTag + logEntry,
   });
 }
+
+function watchLogFile() {
+  if (fs.existsSync(logFilePath)) {
+    let fileSize = fs.statSync(logFilePath).size;
+
+    fs.watchFile(logFilePath, (current) => {
+      if (current.size > fileSize) {
+        const stream = fs.createReadStream(logFilePath, {
+          start: fileSize,
+          end: current.size,
+        });
+
+        stream.on("data", (data) => {
+          sendLogEntry(data.toString());
+        });
+
+        fileSize = current.size;
+      }
+    });
+  } else {
+    setTimeout(watchLogFile, 10000); // Check again after a delay
+  }
+}
+
+const pusher = new Pusher({
+  appId: process.env.appId,
+  key: process.env.key,
+  secret: process.env.secret,
+  cluster: process.env.cluster,
+  useTLS: process.env.useTLS,
+});
+
+
 
 // Create a Registry to register the metrics
 const register = new client.Registry();
@@ -229,6 +250,8 @@ function sendPing() {
 
 // Schedule the ping function to run every 1 minute
 setInterval(sendPing, 60000);
+
+watchLogFile();
 
 // Start the Server
 server = app.listen(process.env.PORT, () => {
