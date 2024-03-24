@@ -8,38 +8,36 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
-const logFilePath = path.join(__dirname, `.pm2/logs/server-${cid}.log`);
+const logFilePathOut = path.join(__dirname, `.pm2/logs/server-${cid}-out.log`);
+const logFilePathError = path.join(__dirname, `.pm2/logs/server-${cid}-error.log`);
 
-function sendLogEntry(logEntry) {
+function sendLogEntry(logEntry, logType) {
   const now = new Date();
   const datetimeTag = `${now.toISOString()} | `;
-  const channel = `dashify-` + process.env.cid; // replace dashify-1 with env of dashify-{cid}
+  const channel = `dashify-${cid}`; // Use dynamic channel name based on cid
   pusher.trigger(channel, "logs", {
-    message: datetimeTag + logEntry,
+    message: `[${logType}] ${datetimeTag}${logEntry}`,
   });
 }
 
-function watchLogFile() {
-  if (fs.existsSync(logFilePath)) {
-    let fileSize = fs.statSync(logFilePath).size;
+function watchLogFile(logFilePath, logType) {
+  let fileSize = fs.existsSync(logFilePath) ? fs.statSync(logFilePath).size : 0;
 
-    fs.watchFile(logFilePath, (current) => {
-      if (current.size > fileSize) {
-        const stream = fs.createReadStream(logFilePath, {
-          start: fileSize,
-          end: current.size,
-        });
+  fs.watchFile(logFilePath, { interval: 1000 }, (current, previous) => {
+    if (current.size > fileSize) {
+      const stream = fs.createReadStream(logFilePath, {
+        start: fileSize,
+        end: current.size,
+      });
 
-        stream.on("data", (data) => {
-          sendLogEntry(data.toString());
-        });
+      stream.on("data", (data) => {
+        // Use sendLogEntry function to format and send the log
+        sendLogEntry(data.toString(), logType);
+      });
 
-        fileSize = current.size;
-      }
-    });
-  } else {
-    setTimeout(watchLogFile, 10000); // Check again after a delay
-  }
+      fileSize = current.size;
+    }
+  });
 }
 
 const pusher = new Pusher({
@@ -251,7 +249,8 @@ function sendPing() {
 // Schedule the ping function to run every 1 minute
 setInterval(sendPing, 60000);
 
-watchLogFile();
+watchLogFile(logFilePathOut, "STDOUT");
+watchLogFile(logFilePathError, "STDERR");
 
 // Start the Server
 server = app.listen(process.env.PORT, () => {
