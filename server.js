@@ -8,8 +8,8 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
-const logFilePathOut = path.join(__dirname, `.pm2/logs/server-${cid}-out.log`);
-const logFilePathError = path.join(__dirname, `.pm2/logs/server-${cid}-error.log`);
+const logFilePathOut = path.join(__dirname, `~/.pm2/logs/server-${cid}-out.log`);
+const logFilePathError = path.join(__dirname, `~/.pm2/logs/server-${cid}-error.log`);
 
 function sendLogEntry(logEntry, logType) {
   const now = new Date();
