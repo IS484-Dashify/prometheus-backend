@@ -9,15 +9,15 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 
-const logFilePathOut = path.join(__dirname, `~/.pm2/logs/server-${process.env.cid}-out.log`);
-const logFilePathError = path.join(__dirname, `~/.pm2/logs/server-${process.env.cid}-error.log`);
+const logFilePathOut = path.join(__dirname, `.pm2/logs/server-${process.env.cid}-out.log`);
+const logFilePathError = path.join(__dirname, `.pm2/logs/server-${process.env.cid}-error.log`);
 
 function sendLogEntry(logEntry, logType) {
   const now = new Date();
   const datetimeTag = `${now.toISOString()} | `;
   const channel = `dashify-${process.env.cid}`; // Use dynamic channel name based on cid
   pusher.trigger(channel, "logs", {
-    message: `[${logType}] ${datetimeTag}${logEntry}`,
+    message: `${datetimeTag}${logEntry}`,
   });
 }
 
@@ -32,8 +32,7 @@ function watchLogFile(logFilePath, logType) {
       });
 
       stream.on("data", (data) => {
-        // Use sendLogEntry function to format and send the log
-        sendLogEntry(data.toString(), logType);
+        sendLogEntry(data.toString());
       });
 
       fileSize = current.size;
