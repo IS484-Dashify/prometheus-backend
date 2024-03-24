@@ -243,7 +243,7 @@ app.get("/downtime", (req, res) => {
 function sendPing() {
   const now = new Date();
   const message = `Server is still listening at http://localhost:${port}`;
-  sendLogEntry(message);
+  sendLogEntry(message, "STDOUT");
 }
 
 // Schedule the ping function to run every 1 minute
@@ -254,6 +254,6 @@ watchLogFile(logFilePathError, "STDERR");
 
 // Start the Server
 server = app.listen(process.env.PORT, () => {
-  console.log(`Server is listening on port ${process.env.PORT}`);
-  sendLogEntry(`Server is listening on port ${process.env.PORT}`);
+  // console.log(`Server is listening on port ${process.env.PORT}`);
+  sendLogEntry(`Server is listening on port ${process.env.PORT}`, "STDOUT");
 });
