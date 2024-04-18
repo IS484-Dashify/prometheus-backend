@@ -247,8 +247,8 @@ function sendPing() {
   console.log(message);
 }
 
-// Schedule the ping function to run every 1 minute
-setInterval(sendPing, 60000);
+// Schedule the ping function to run every 30 seconds
+setInterval(sendPing, 30000);
 
 watchLogFile(logFilePathOut, "STDOUT");
 watchLogFile(logFilePathError, "STDERR");
